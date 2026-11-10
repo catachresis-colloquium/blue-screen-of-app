@@ -1,6 +1,6 @@
 # Clone the repository
 
-git clone https://github.com/hyperpolymath/blue-screen-of-app.git
+git clone https://github.com/catachresis-colloquium/blue-screen-of-app.git
 cd blue-screen-of-app
 
 # Using Guix (recommended for reproducibility)
@@ -90,10 +90,10 @@ blue-screen-of-app/
 
     Look for issues labelled:
 
-    - [`good first issue`](https://github.com/hyperpolymath/blue-screen-of-app/labels/good%20first%20issue) — Simple Perimeter 3 tasks
-    - [`help wanted`](https://github.com/hyperpolymath/blue-screen-of-app/labels/help%20wanted) — Community help needed
-    - [`documentation`](https://github.com/hyperpolymath/blue-screen-of-app/labels/documentation) — Docs improvements
-    - [`perimeter-3`](https://github.com/hyperpolymath/blue-screen-of-app/labels/perimeter-3) — Community sandbox scope
+    - [`good first issue`](https://github.com/catachresis-colloquium/blue-screen-of-app/labels/good%20first%20issue) — Simple Perimeter 3 tasks
+    - [`help wanted`](https://github.com/catachresis-colloquium/blue-screen-of-app/labels/help%20wanted) — Community help needed
+    - [`documentation`](https://github.com/catachresis-colloquium/blue-screen-of-app/labels/documentation) — Docs improvements
+    - [`perimeter-3`](https://github.com/catachresis-colloquium/blue-screen-of-app/labels/perimeter-3) — Community sandbox scope
 
     ---
 
