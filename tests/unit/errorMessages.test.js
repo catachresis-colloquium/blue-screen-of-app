@@ -10,7 +10,7 @@ import {
   getRandomErrorJS,
   getErrorByCodeJS,
   getAllStopCodes,
-} from "../../src/ErrorMessages.bs.js";
+} from "../../src/ErrorMessages.js";
 
 Deno.test("ErrorMessages: getRandomErrorJS returns valid shape", () => {
   const error = getRandomErrorJS();

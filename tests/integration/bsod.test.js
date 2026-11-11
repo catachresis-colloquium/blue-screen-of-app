@@ -10,11 +10,11 @@ import {
   getRandomErrorJS,
   getErrorByCodeJS,
   getAllStopCodes,
-} from "../../src/ErrorMessages.bs.js";
+} from "../../src/ErrorMessages.js";
 import {
   resetStats,
   getStatsObject,
-} from "../../src/Analytics.bs.js";
+} from "../../src/Analytics.js";
 
 // Simulates the query-param parsing the server performs
 function applyQueryParams(params) {

@@ -1,8 +1,8 @@
 // Blue Screen of App - Deno Server (Minimal JavaScript)
-// Imports compiled ReScript modules for business logic
+// Imports the ErrorMessages and Analytics ES modules for business logic
 
-import { getAllStopCodes, getErrorByCodeJS, getRandomErrorJS } from './ErrorMessages.bs.js';
-import { getStatsObject, getUptime, resetStats, trackApiCall, trackVisit } from './Analytics.bs.js';
+import { getAllStopCodes, getErrorByCodeJS, getRandomErrorJS } from './ErrorMessages.js';
+import { getStatsObject, getUptime, resetStats, trackApiCall, trackVisit } from './Analytics.js';
 
 // Load configuration from Nickel (via JSON export)
 const configPath = new URL('../config.json', import.meta.url);

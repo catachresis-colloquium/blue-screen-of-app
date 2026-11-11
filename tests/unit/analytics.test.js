@@ -7,7 +7,7 @@ import {
   resetStats,
   getStatsObject,
   getUptime,
-} from "../../src/Analytics.bs.js";
+} from "../../src/Analytics.js";
 
 Deno.test("Analytics: trackVisit increments totalVisits", () => {
   resetStats();
@@ -86,4 +86,19 @@ Deno.test("Analytics: resetStats clears all counters", () => {
   assertEquals(stats.customMessages, 0);
   assertEquals(Object.keys(stats.styleViews).length, 0);
   assertEquals(Object.keys(stats.errorCodeViews).length, 0);
+});
+
+Deno.test("Analytics: prototype-named style keys are plain counters", () => {
+  resetStats();
+  trackVisit("__proto__", "COFFEE_NOT_FOUND", false);
+  trackVisit("__proto__", "COFFEE_NOT_FOUND", false);
+  trackVisit("constructor", "toString", false);
+  const stats = getStatsObject();
+  assertEquals(Object.getPrototypeOf(stats.styleViews), null);
+  assertEquals(stats.styleViews["__proto__"], 2);
+  assertEquals(stats.styleViews["constructor"], 1);
+  assertEquals(stats.errorCodeViews["toString"], 1);
+  assertEquals(Object.prototype.hasOwnProperty.call({}, "COFFEE_NOT_FOUND"), false);
+  assertEquals(JSON.parse(JSON.stringify(stats)).styleViews.constructor, 1);
+  resetStats();
 });

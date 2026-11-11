@@ -11,13 +11,13 @@ import {
   getRandomErrorJS,
   getErrorByCodeJS,
   getAllStopCodes,
-} from "../../src/ErrorMessages.bs.js";
+} from "../../src/ErrorMessages.js";
 import {
   trackVisit,
   trackApiCall,
   resetStats,
   getStatsObject,
-} from "../../src/Analytics.bs.js";
+} from "../../src/Analytics.js";
 
 Deno.test("API logic: /api/error — random error has required fields", () => {
   const data = getRandomErrorJS();
