@@ -1,26 +1,39 @@
 // Blue Screen of App - Deno Server (Minimal JavaScript)
 // Imports the ErrorMessages and Analytics ES modules for business logic
 
-import { getAllStopCodes, getErrorByCodeJS, getRandomErrorJS } from './ErrorMessages.js';
-import { getStatsObject, getUptime, resetStats, trackApiCall, trackVisit } from './Analytics.js';
+import {
+  getAllStopCodes,
+  getErrorByCodeJS,
+  getRandomErrorJS,
+} from "./ErrorMessages.js";
+import {
+  getStatsObject,
+  getUptime,
+  resetStats,
+  trackApiCall,
+  trackVisit,
+} from "./Analytics.js";
 
 // Load configuration from Nickel (via JSON export)
-const configPath = new URL('../config.json', import.meta.url);
+const configPath = new URL("../config.json", import.meta.url);
 let config = {
-  server: { port: 443, host: '0.0.0.0' },
-  app: { name: 'Blue Screen of App', url: 'https://localhost' },
-  features: { qrCodes: true, defaultQrUrl: 'https://github.com/Hyperpolymath/blue-screen-of-app' },
+  server: { port: 443, host: "0.0.0.0" },
+  app: { name: "Blue Screen of App", url: "https://localhost" },
+  features: {
+    qrCodes: true,
+    defaultQrUrl: "https://github.com/Hyperpolymath/blue-screen-of-app",
+  },
 };
 
 try {
   const configText = await Deno.readTextFile(configPath);
   config = JSON.parse(configText);
 } catch {
-  console.log('⚠️  config.json not found, using defaults');
+  console.log("⚠️  config.json not found, using defaults");
 }
 
 // BSOD style templates
-const styles = ['win10', 'win11', 'win7', 'winxp'];
+const styles = ["win10", "win11", "win7", "winxp"];
 
 // Render BSOD HTML (pure functions, no EJS needed)
 const renderBSOD = (style, errorData, qrCode) => {
@@ -38,10 +51,18 @@ const renderBSOD = (style, errorData, qrCode) => {
 
   // Style-specific colors and fonts
   const styleConfig = {
-    win10: { bg: '#0178D4', font: "'Segoe UI', sans-serif", emoji: '😞' },
-    win11: { bg: '#0067C0', font: "'Segoe UI Variable', 'Segoe UI', sans-serif", emoji: '😞' },
-    win7: { bg: '#00579e', font: "'Lucida Console', monospace", emoji: '' },
-    winxp: { bg: '#0000AA', font: "'Perfect DOS VGA 437', 'Courier New', monospace", emoji: '' },
+    win10: { bg: "#0178D4", font: "'Segoe UI', sans-serif", emoji: "😞" },
+    win11: {
+      bg: "#0067C0",
+      font: "'Segoe UI Variable', 'Segoe UI', sans-serif",
+      emoji: "😞",
+    },
+    win7: { bg: "#00579e", font: "'Lucida Console', monospace", emoji: "" },
+    winxp: {
+      bg: "#0000AA",
+      font: "'Perfect DOS VGA 437', 'Courier New', monospace",
+      emoji: "",
+    },
   };
 
   const cfg = styleConfig[style] || styleConfig.win10;
@@ -66,12 +87,14 @@ const renderBSOD = (style, errorData, qrCode) => {
 </head>
 <body>
   <div class="container">
-    ${cfg.emoji ? `<div class="emoji">${cfg.emoji}</div>` : ''}
+    ${cfg.emoji ? `<div class="emoji">${cfg.emoji}</div>` : ""}
     <div class="stop-code">${stopCode}</div>
     <div class="description">${description}</div>
     <div class="technical">${technicalDetail}</div>
     <div class="percentage">${percentage}% complete</div>
-    ${qrCode ? `<div class="qr"><img src="${qrCode}" alt="QR Code" /></div>` : ''}
+    ${
+    qrCode ? `<div class="qr"><img src="${qrCode}" alt="QR Code" /></div>` : ""
+  }
   </div>
 </body>
 </html>`;
@@ -88,12 +111,12 @@ const generateQR = (_url) => {
 const getQueryParams = (url) => {
   const params = new URL(url).searchParams;
   return {
-    style: params.get('style') || 'win10',
-    code: params.get('code'),
-    message: params.get('message'),
-    technical: params.get('technical'),
-    qr: params.get('qr'),
-    percentage: params.get('percentage'),
+    style: params.get("style") || "win10",
+    code: params.get("code"),
+    message: params.get("message"),
+    technical: params.get("technical"),
+    qr: params.get("qr"),
+    percentage: params.get("percentage"),
   };
 };
 
@@ -103,49 +126,53 @@ const handler = async (req) => {
   const path = url.pathname;
 
   // Get allowed origin from request or use default
-  const requestOrigin = req.headers.get('Origin');
-  const allowedOrigins = (Deno.env.get('CORS_ORIGIN') || '').split(',').filter(Boolean);
+  const requestOrigin = req.headers.get("Origin");
+  const allowedOrigins = (Deno.env.get("CORS_ORIGIN") || "").split(",").filter(
+    Boolean,
+  );
   const corsOrigin = allowedOrigins.length > 0
-    ? (allowedOrigins.includes(requestOrigin) ? requestOrigin : allowedOrigins[0])
-    : (requestOrigin || 'https://localhost');
+    ? (allowedOrigins.includes(requestOrigin)
+      ? requestOrigin
+      : allowedOrigins[0])
+    : (requestOrigin || "https://localhost");
 
   // Security headers (Helmet.js equivalent)
   const headers = {
     // CORS headers - restricted to specific origins
-    'Access-Control-Allow-Origin': corsOrigin,
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    "Access-Control-Allow-Origin": corsOrigin,
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
     // Security headers
-    'X-Content-Type-Options': 'nosniff',
-    'X-Frame-Options': 'DENY',
-    'X-XSS-Protection': '0',
-    'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'Cross-Origin-Opener-Policy': 'same-origin',
-    'Cross-Origin-Resource-Policy': 'same-origin',
-    'X-DNS-Prefetch-Control': 'off',
-    'X-Download-Options': 'noopen',
-    'X-Permitted-Cross-Domain-Policies': 'none',
-    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "X-XSS-Protection": "0",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Cross-Origin-Opener-Policy": "same-origin",
+    "Cross-Origin-Resource-Policy": "same-origin",
+    "X-DNS-Prefetch-Control": "off",
+    "X-Download-Options": "noopen",
+    "X-Permitted-Cross-Domain-Policies": "none",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
   };
 
   // Health check
-  if (path === '/api/health') {
+  if (path === "/api/health") {
     trackApiCall();
     return new Response(
       JSON.stringify({
-        status: 'ok',
+        status: "ok",
         uptime: getUptime(),
         timestamp: new Date().toISOString(),
       }),
       {
         status: 200,
-        headers: { ...headers, 'Content-Type': 'application/json' },
+        headers: { ...headers, "Content-Type": "application/json" },
       },
     );
   }
 
   // Get all error codes
-  if (path === '/api/codes') {
+  if (path === "/api/codes") {
     trackApiCall();
     return new Response(
       JSON.stringify({
@@ -153,13 +180,13 @@ const handler = async (req) => {
       }),
       {
         status: 200,
-        headers: { ...headers, 'Content-Type': 'application/json' },
+        headers: { ...headers, "Content-Type": "application/json" },
       },
     );
   }
 
   // Get all styles
-  if (path === '/api/styles') {
+  if (path === "/api/styles") {
     trackApiCall();
     return new Response(
       JSON.stringify({
@@ -167,67 +194,67 @@ const handler = async (req) => {
       }),
       {
         status: 200,
-        headers: { ...headers, 'Content-Type': 'application/json' },
+        headers: { ...headers, "Content-Type": "application/json" },
       },
     );
   }
 
   // Get analytics
-  if (path === '/api/analytics') {
+  if (path === "/api/analytics") {
     trackApiCall();
     return new Response(JSON.stringify(getStatsObject()), {
       status: 200,
-      headers: { ...headers, 'Content-Type': 'application/json' },
+      headers: { ...headers, "Content-Type": "application/json" },
     });
   }
 
   // Reset analytics (POST only)
-  if (path === '/api/analytics/reset' && req.method === 'POST') {
+  if (path === "/api/analytics/reset" && req.method === "POST") {
     trackApiCall();
     resetStats();
-    return new Response(JSON.stringify({ message: 'Analytics reset' }), {
+    return new Response(JSON.stringify({ message: "Analytics reset" }), {
       status: 200,
-      headers: { ...headers, 'Content-Type': 'application/json' },
+      headers: { ...headers, "Content-Type": "application/json" },
     });
   }
 
   // Get random error
-  if (path === '/api/error') {
+  if (path === "/api/error") {
     trackApiCall();
     const error = getRandomErrorJS();
     return new Response(JSON.stringify(error), {
       status: 200,
-      headers: { ...headers, 'Content-Type': 'application/json' },
+      headers: { ...headers, "Content-Type": "application/json" },
     });
   }
 
   // Get specific error by code
-  if (path.startsWith('/api/error/')) {
+  if (path.startsWith("/api/error/")) {
     trackApiCall();
-    const code = path.split('/api/error/')[1];
+    const code = path.split("/api/error/")[1];
     const error = getErrorByCodeJS(code);
 
     if (!error) {
-      return new Response(JSON.stringify({ error: 'Error code not found' }), {
+      return new Response(JSON.stringify({ error: "Error code not found" }), {
         status: 404,
-        headers: { ...headers, 'Content-Type': 'application/json' },
+        headers: { ...headers, "Content-Type": "application/json" },
       });
     }
 
     return new Response(JSON.stringify(error), {
       status: 200,
-      headers: { ...headers, 'Content-Type': 'application/json' },
+      headers: { ...headers, "Content-Type": "application/json" },
     });
   }
 
   // Random style redirect
-  if (path === '/random') {
+  if (path === "/random") {
     const randomStyle = styles[Math.floor(Math.random() * styles.length)];
     return Response.redirect(`/?style=${randomStyle}`, 302);
   }
 
   // Main BSOD page
-  if (path === '/' || path === '') {
+  if (path === "/" || path === "") {
     const params = getQueryParams(req.url);
 
     // Get error data
@@ -253,21 +280,25 @@ const handler = async (req) => {
     const qrCode = await generateQR(params.qr || config.features.defaultQrUrl);
 
     // Track analytics
-    trackVisit(params.style, errorData.stopCode, !!(params.message || params.technical));
+    trackVisit(
+      params.style,
+      errorData.stopCode,
+      !!(params.message || params.technical),
+    );
 
     // Render BSOD
     const html = renderBSOD(params.style, errorData, qrCode);
 
     return new Response(html, {
       status: 200,
-      headers: { ...headers, 'Content-Type': 'text/html; charset=utf-8' },
+      headers: { ...headers, "Content-Type": "text/html; charset=utf-8" },
     });
   }
 
   // 404
-  return new Response(JSON.stringify({ error: 'Not found' }), {
+  return new Response(JSON.stringify({ error: "Not found" }), {
     status: 404,
-    headers: { ...headers, 'Content-Type': 'application/json' },
+    headers: { ...headers, "Content-Type": "application/json" },
   });
 };
 
@@ -291,7 +322,7 @@ console.log(`
 // Deno.serve with HTTP/2 and HTTP/3 support (experimental)
 Deno.serve({
   port: port,
-  hostname: config.server.host || '0.0.0.0',
+  hostname: config.server.host || "0.0.0.0",
   // Enable HTTP/2 and HTTP/3 (QUIC) - requires --unstable flag
   // and TLS certificates
   onListen: ({ hostname, port }) => {

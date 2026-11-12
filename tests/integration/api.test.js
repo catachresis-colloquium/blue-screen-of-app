@@ -2,21 +2,17 @@
 // Integration-style tests for API logic (Deno-native, ESM)
 // Tests exercise the core modules used by the API routes without
 // spinning up the HTTP server, verifying the logic contract.
+import { assert, assertEquals, assertExists } from "jsr:@std/assert";
 import {
-  assertEquals,
-  assertExists,
-  assert,
-} from "jsr:@std/assert";
-import {
-  getRandomErrorJS,
-  getErrorByCodeJS,
   getAllStopCodes,
+  getErrorByCodeJS,
+  getRandomErrorJS,
 } from "../../src/ErrorMessages.js";
 import {
-  trackVisit,
-  trackApiCall,
-  resetStats,
   getStatsObject,
+  resetStats,
+  trackApiCall,
+  trackVisit,
 } from "../../src/Analytics.js";
 
 Deno.test("API logic: /api/error — random error has required fields", () => {

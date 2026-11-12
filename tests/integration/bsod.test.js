@@ -1,20 +1,12 @@
 // SPDX-License-Identifier: MPL-2.0
 // Integration-style tests for BSOD route logic (Deno-native, ESM)
 // Tests verify module contracts without spinning up the HTTP server.
+import { assert, assertEquals } from "jsr:@std/assert";
 import {
-  assertEquals,
-  assertExists,
-  assert,
-} from "jsr:@std/assert";
-import {
-  getRandomErrorJS,
-  getErrorByCodeJS,
   getAllStopCodes,
+  getErrorByCodeJS,
+  getRandomErrorJS,
 } from "../../src/ErrorMessages.js";
-import {
-  resetStats,
-  getStatsObject,
-} from "../../src/Analytics.js";
 
 // Simulates the query-param parsing the server performs
 function applyQueryParams(params) {
