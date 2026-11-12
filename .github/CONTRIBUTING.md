@@ -1,3 +1,4 @@
+```bash
 # Clone the repository
 
 git clone https://github.com/catachresis-colloquium/blue-screen-of-app.git
@@ -17,6 +18,7 @@ toolbox enter blue-screen-of-app-dev
 
 just check   # or: cargo check / mix compile / etc.
 just test    # Run test suite
+```
 
 ### Repository Structure
 
@@ -101,21 +103,26 @@ blue-screen-of-app/
 
 ### Branch Naming
 
-docs/short-description # Documentation (P3) test/what-added # Test
-additions (P3) feat/short-description # New features (P2)
-fix/issue-number-description # Bug fixes (P2) refactor/what-changed #
-Code improvements (P2) security/what-fixed # Security fixes (P1-2)
-
+```text
+docs/short-description         # Documentation (P3)
+test/what-added                # Test additions (P3)
+feat/short-description         # New features (P2)
+fix/issue-number-description   # Bug fixes (P2)
+refactor/what-changed          # Code improvements (P2)
+security/what-fixed            # Security fixes (P1-2)
+```
 
 ### Commit Messages
 
     We follow [Conventional Commits](https://www.conventionalcommits.org/):
 
+```text
 type(scope): description
 
 Body: what changed and why.
 
 Footer: issue reference, e.g. Closes #123
-\[optional body\]
+[optional body]
 
-\[optional footer\]
+[optional footer]
+```

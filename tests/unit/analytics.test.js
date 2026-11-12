@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: MPL-2.0
 // Unit tests for Analytics module (Deno-native, ESM)
-import { assertEquals, assertGreaterOrEqual, assertObjectMatch } from "jsr:@std/assert";
 import {
-  trackVisit,
-  trackApiCall,
-  resetStats,
+  assertEquals,
+  assertGreaterOrEqual,
+  assertObjectMatch,
+} from "jsr:@std/assert";
+import {
   getStatsObject,
   getUptime,
+  resetStats,
+  trackApiCall,
+  trackVisit,
 } from "../../src/Analytics.js";
 
 Deno.test("Analytics: trackVisit increments totalVisits", () => {
@@ -98,7 +102,10 @@ Deno.test("Analytics: prototype-named style keys are plain counters", () => {
   assertEquals(stats.styleViews["__proto__"], 2);
   assertEquals(stats.styleViews["constructor"], 1);
   assertEquals(stats.errorCodeViews["toString"], 1);
-  assertEquals(Object.prototype.hasOwnProperty.call({}, "COFFEE_NOT_FOUND"), false);
+  assertEquals(
+    Object.prototype.hasOwnProperty.call({}, "COFFEE_NOT_FOUND"),
+    false,
+  );
   assertEquals(JSON.parse(JSON.stringify(stats)).styleViews.constructor, 1);
   resetStats();
 });

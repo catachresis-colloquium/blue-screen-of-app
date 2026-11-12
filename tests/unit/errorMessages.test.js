@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: MPL-2.0
 // Unit tests for ErrorMessages module (Deno-native, ESM)
 import {
-  assertEquals,
-  assertNotEquals,
-  assertExists,
   assert,
+  assertEquals,
+  assertExists,
+  assertNotEquals,
 } from "jsr:@std/assert";
 import {
-  getRandomErrorJS,
-  getErrorByCodeJS,
   getAllStopCodes,
+  getErrorByCodeJS,
+  getRandomErrorJS,
 } from "../../src/ErrorMessages.js";
 
 Deno.test("ErrorMessages: getRandomErrorJS returns valid shape", () => {
@@ -32,7 +32,10 @@ Deno.test("ErrorMessages: getRandomErrorJS percentage is 0-100", () => {
 Deno.test("ErrorMessages: getRandomErrorJS returns code from list", () => {
   const codes = getAllStopCodes();
   const error = getRandomErrorJS();
-  assert(codes.includes(error.stopCode), `${error.stopCode} not in stop codes list`);
+  assert(
+    codes.includes(error.stopCode),
+    `${error.stopCode} not in stop codes list`,
+  );
 });
 
 Deno.test("ErrorMessages: getRandomErrorJS returns variety over 10 calls", () => {
